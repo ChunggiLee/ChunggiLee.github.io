@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Creating DOM Elements</title>
+</head>
+<body>
+	<div>
+		<style>
+			.chart-example{
+				margin: 20px;
+				padding: 10px;
+				border: solid 1px  #babdb6;
+			}
+			
+			.data-item {
+				border: solid 1px black;
+				margin: 4px;
+				padding: 4px;
+				background-color: #eeeeec;
+			}
+		</style>
+	</div>
+	
+	<h1 class="section-title">Creating DOM Elements</h1>
+	
+	<h2 class="section-subtitle">Method Chaining</h2>
+	
+	<div class="chart-example" id="chart-01"></div>
+	
+	<script src="" type="text/javascript">
+		var data = ['a', 'b', 'c'];
+		d3.select('#chart-01').selectAll('div.data-item')
+			.data(data)
+			.enter()
+			.append('div')
+			.attr('class', 'data-item')
+			.appen('p')
+			.html(function(d) {return d;});
+	</script>
+
+</body>
+</html>
