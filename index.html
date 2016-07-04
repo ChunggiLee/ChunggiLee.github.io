@@ -7,7 +7,7 @@
       font: 10px sans-serif;
       height: 800px;
       position: relative;
-      width: 80%;
+      width: 100%;
     }
              
     #mainBubble svg {
@@ -27,9 +27,10 @@
       ChunggiLee Homepage
     </title>
    
-  <div id="mainBubble" style="height: 579px;"><svg class="mainBubbleSVG" width="826.88" height="579"><text id="bubbleItemNote" x="10" y="398.44" font-size="12" dominant-baseline="middle" alignment-baseline="middle" style="fill: rgb(136, 136, 136);"></text></svg></div>
+  <div id="mainBubble" style="height: 500px;"><svg class="mainBubbleSVG" width="1216" height="500"><text id="bubbleItemNote" x="10" y="398.44" font-size="12" dominant-baseline="middle" alignment-baseline="middle" style="fill: rgb(136, 136, 136);"></text></svg></div>
   <script>
-   var w = window.innerWidth*0.68*0.95;
+   
+   var w = window.innerWidth*0.95;
    var h = Math.ceil(w*0.7);
    var oR = 0;
    var nTop = 0;
@@ -66,7 +67,7 @@
         nTop = root.children.length;
         oR = w/(1+3*nTop);  
  
-    h = Math.ceil(w/nTop*2);
+    h = Math.ceil(w/nTop*1.5);
     svgContainer.style("height",h+"px");
          
         var colVals = d3.scale.category10();
@@ -150,10 +151,10 @@
         }); 
  
     resetBubbles = function () {
-      w = window.innerWidth*0.68*0.95;
+      w = window.innerWidth*0.95;
       oR = w/(1+3*nTop);
        
-      h = Math.ceil(w/nTop*2);
+      h = Math.ceil(w/nTop*1.5);
       svgContainer.style("height",h+"px");
  
       mainNote.attr("y",h-15);
