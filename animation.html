@@ -2,7 +2,7 @@
 <html>
 <head>
   <title>NagarryTest</title>
-<style>
+<!--<style>
 body {
       background-color: #000000;
       margin: 0px;
@@ -140,6 +140,30 @@ function displayAll()
     );
   canvasCtx.drawImage(canvasBuffer, 0, 0);
 }
-</script>
+</script>-->
+
+<style>
+.character {
+  -webkit-transform: translate(0, 0);
+  -webkit-transition: -webkit-transform 500ms;
+
+  transform: translate(0, 0);
+  transition: transform 500ms;
+}
+
+.character.move {
+  -webkit-transform: translate(100px, 100px);
+  transform: translate(100px, 100px);
+}
+
+</style>
+
+<body>
+  	<div class="character">
+		<h1>codrops</h1>
+	</div>
+</body>
+
+
 
 </html>

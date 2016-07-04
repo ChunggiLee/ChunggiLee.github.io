@@ -1,4 +1,203 @@
-     
+   <style>
+   		.pojoro  {
+	background: rgba( 255, 255, 255, 1);
+	background: radial-gradient(ellipse at center, rgba(255,255,255,1) 40%,rgba(51,51,51,1) 100%);
+	border-radius: 100%;
+	
+	/* box-shadow: secondary color, body, eyelash */
+	
+	box-shadow: 0 0 0 0.2em rgb(146,89,149), 
+				0 0 0.1em 0.55em rgb(176,89,179), 
+				inset 0 0.2em 0 0 rgb(136,79,139);
+	
+	/* ojo (eye) */
+	
+	color: rgba( 40, 40, 40, 0.8);
+	line-height: 1.1em;
+	padding-left: 0.18em;
+	-webkit-font-smoothing: antialiased;
+	user-select: none;
+	
+	/* usability, position and transition */
+	
+	cursor: pointer;
+	position: relative;
+	margin: 5em auto 0 auto;
+	width: 1em; height: 1em;
+	transform-origin: center;
+	transition: all 0.8s ease-in-out;
+	
+	/* Separate the animations to have a better control over the eye and the body */
+	
+	animation: eye 2.2s ease-in-out infinite, body 1.15s 1.8s linear infinite; 
+} 
+
+/* Elevate and distort the creature. */
+
+.pojoro:hover  {
+	transform: scaleY(0.9) scaleX(0.95) translateY(-3em) translateZ(0);
+}
+
+/* wings */
+
+.pojoro:before,
+.pojoro:after  {
+	background: rgba(0,0,0,0);
+	border-radius: 100%;
+	content: "";
+	
+	/* display:none, hide wings */
+	
+	display: none;
+	position: absolute;
+	width: 1em; height: 0.1em;
+	-webkit-filter: blur(1px);
+	transition: all 0.2s;
+	animation-duration: 0.2s;
+	animation-iteration-count: infinite;
+	animation-timing-function: ease-in-out;
+}
+
+.pojoro:before  {
+	top: 25%; left: 1.45em;
+	margin-left: -1em;
+	transform-origin: left;
+	transform: rotate(-60deg);
+	animation-name: wings;
+}
+
+.pojoro:after  {
+	top: 25%; left: -2.2em;
+	margin-left: 1em;
+	transform-origin: right;
+	transform: rotate(60deg);
+	animation-name: wings2;
+}
+
+.pojoro:hover:before,
+.pojoro:hover:after  {
+	background: rgba(100,100,100,0.8);
+	
+	/* display:block, we allow the wings to appear and the animation starts */
+	
+	display: block;
+	margin-left: 0em;
+	width: 2em; height: 0.3em;
+}
+
+@keyframes eye  {
+
+	/* Eye movement */
+	
+	5%, 10%  {
+		line-height: 1.2em;
+		padding-left: 0em;
+	}
+	15%, 20%  {
+		line-height: 1.15em;
+		padding-left: 0.4em;
+	}
+	
+	/* Eyelash movement */
+	
+	25%  {
+		box-shadow: 0 0 0 0.2em rgb(146,89,149), 
+					0 0 0.1em 0.55em rgb(166,89,169), 
+					inset 0 1em 0 0 rgb(136,79,139);
+	}
+	23%, 27%  {
+		box-shadow: 0 0 0 0.2em rgb(146,89,149), 
+					0 0 0.1em 0.55em rgb(166,89,169), 
+					inset 0 0.2em 0 0 rgb(136,79,139);
+	}
+}
+
+@keyframes body  {
+	50%  {
+		width: 1.4em; height: 1.4em;
+	} 
+}
+
+@keyframes wings  {
+	50%  {
+		transform: rotate(65deg);
+	}
+}
+
+@keyframes wings2  {
+	50%  {
+		transform: rotate(-65deg);
+	}
+}
+   </style>
+    <style>
+    	.circle {
+	background: rgb(255,255,255);
+	border-radius: 100%;
+	cursor: pointer;
+	position: relative;
+	margin: 0 auto;
+	width: 15em; 
+	height: 15em;
+	overflow: hidden;
+	transform: translateZ(0);
+}
+
+.circle h1 {
+	color: rgba(189, 185, 199,0);
+	font-family: 'Lato', sans-serif;
+	font-weight: 900;
+	font-size: 1.6em;
+	line-height: 8.2em;
+	text-align: center;
+	text-transform: uppercase;
+	-webkit-font-smoothing: antialiased;
+	user-select: none;
+	transition: color 0.8s ease-in-out;
+}
+
+.circle:before,
+.circle:after {
+	border-radius: 100%;
+	content:"";
+	position: absolute;
+	top: 0; 
+	left: 0;
+	width: inherit; 
+	height: inherit;			
+	box-shadow: inset 10.6em 0 0 rgba(30, 140, 209, 0.2), 
+	            inset 0 10.6em 0 rgba(30, 140, 209, 0.2), 
+	            inset -10.6em 0 0 rgba(30, 140, 209, 0.2), 
+	            inset 0 -10.6em 0 rgba(30, 140, 209, 0.2);
+	transition: box-shadow 0.75s;
+}
+
+/* We rotate the :after pseudo-element to get the edge from the corner, we could also just do that with box-shadows. */
+
+.circle:after  {
+	transform: rotate(45deg);
+}
+
+/* There is no problem using "pseudo-class + pseudo-element" :) */
+
+.circle:hover:before,
+.circle:hover:after  {
+	box-shadow: inset 0.86em 0 0 rgba(255, 0, 0, 0.5), 
+	            inset 0 0.86em 0 rgba(252, 150, 0, 0.5), 
+	            inset -0.86em 0 0 rgba(0, 255, 0, 0.5),	
+	            inset 0 -0.86em 0 rgba(0, 150, 255, 0.5);
+}
+
+.circle:hover > h1  {
+	color: rgba(185, 185, 185,1);
+}
+    </style>
+     <div class="circle">
+	<h1>Welcome!!</h1>
+	</div>
+	<div style="position: absolute; right:400px; top: 100px; " class="pojoro">●</div>
+	<div style="position: absolute; left:400px; top: 100px; " class="pojoro">●</div>
+	
    <style type="text/css">
     #mainBubble {
       background: #fff;
