@@ -1,0 +1,25 @@
+{"name":"bubble", "children": [
+{"name":"D3.js","description":"",
+"children":[
+    {"name": "Reusable Chart","address":"https://chunggilee.github.io/ReusableChart/index.html", "note":""},
+    {"name": "Circos","address":"https://chunggilee.github.io/Circos/circos.html"},
+    {"name": "Chord","address":"https://chunggilee.github.io/Chord/chord.html", "note":""}
+]},
+{"name": "Clustering", "description": "",
+"children":[
+    {"name":"Car and Wine Clustering","address":"https://chunggilee.github.io/Clustering (auto.csv and wine data).pdf","note":""},
+    {"name":"Papers","address":"", "note":""}
+    
+]},
+{"name":"Genome", "description":"",
+"children":[
+    {"name":"Papers","address":""},
+    {"name":"","address":""}
+]},
+{"name":"MyWork", "description":"",
+"children":[
+    {"name":"Progress report", "address":"https://docs.google.com/document/d/13Hj4cYrtId1VWH0ZSXcYkGmz_BAr08TfKya8xLURDF8/edit"},
+    {"name":"Summary", "address":"https://docs.google.com/document/d/1ZiTY0bHcV1nOm83JhuVhkGolXUGSZHb6KG-4WsVFdHk/edit?usp=sharing"},
+    {"name":"Data","address":""}
+]}
+]}
