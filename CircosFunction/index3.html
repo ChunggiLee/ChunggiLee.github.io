@@ -83,10 +83,7 @@
             .attr("height", h)
           .append("svg:g")
             .attr("id", "circle")
-            .attr("transform", "translate(" + w / 2 + "," + h / 2 + ")")
-            .call(d3.behavior.zoom().on("zoom", function () {
-    			svg.attr("transform", "translate(" + w / 2 + "," + h / 2 + ")" + " scale(" + d3.event.scale + ")")
-  			}))
+            .attr("transform", "translate(" + w / 2 + "," + h / 2 + ")");
 
             svg.append("circle")
                 .attr("r", r0 + 20);
@@ -149,12 +146,7 @@
               + p(d.tvalue/(d.mtotal/2)) + " of Matrix Total (" + q(d.mtotal/2) + ")";
           }
 
-          function groupTip (d) {
-            var p = d3.format(".1%"), q = d3.format(",f")
-            return "Group Info:<br/>"
-                + d.gname + " : " + q(d.gvalue) + "<br/>"
-                + p(d.gvalue/(d.mtotal/2)) + " of Matrix Total (" + q(d.mtotal/2) + ")"
-          }
+         
 
           function mouseover(d, i) {
             d3.select("#tooltip")

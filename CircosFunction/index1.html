@@ -83,10 +83,7 @@
             .attr("height", h)
           .append("svg:g")
             .attr("id", "circle")
-            .attr("transform", "translate(" + w / 2 + "," + h / 2 + ")")
-            .call(d3.behavior.zoom().on("zoom", function () {
-    			svg.attr("transform", "translate(" + w / 2 + "," + h / 2 + ")" + " scale(" + d3.event.scale + ")")
-  			}))
+            .attr("transform", "translate(" + w / 2 + "," + h / 2 + ")");
 
             svg.append("circle")
                 .attr("r", r0 + 20);

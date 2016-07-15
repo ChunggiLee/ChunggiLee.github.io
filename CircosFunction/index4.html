@@ -83,10 +83,7 @@
             .attr("height", h)
           .append("svg:g")
             .attr("id", "circle")
-            .attr("transform", "translate(" + w / 2 + "," + h / 2 + ")")
-            .call(d3.behavior.zoom().on("zoom", function () {
-    			svg.attr("transform", "translate(" + w / 2 + "," + h / 2 + ")" + " scale(" + d3.event.scale + ")")
-  			}))
+            .attr("transform", "translate(" + w / 2 + "," + h / 2 + ")");
 
             svg.append("circle")
                 .attr("r", r0 + 20);
@@ -135,26 +132,13 @@
                 })
                 .on("mouseout", function (d) { d3.select("#tooltip").style("visibility", "hidden") });
 
-          function chordTip (d) {
-            var p = d3.format(".1%"), q = d3.format(",f")
-            return "Chord Info:<br/>"
-              +  d.sname + " → " + d.tname
-              + ": " + q(d.svalue) + "<br/>"
-              + p(d.svalue/d.stotal) + " of " + d.sname + "'s Total (" + q(d.stotal) + ")<br/>"
-              + p(d.svalue/(d.mtotal/2)) + " of Matrix Total (" + q(d.mtotal/2) + ")<br/>"
-              + "<br/>"
-              + d.tname + " → " + d.sname
-              + ": " + q(d.tvalue) + "<br/>"
-              + p(d.tvalue/d.ttotal) + " of " + d.tname + "'s Total (" + q(d.ttotal) + ")<br/>"
-              + p(d.tvalue/(d.mtotal/2)) + " of Matrix Total (" + q(d.mtotal/2) + ")";
-          }
-
-          function groupTip (d) {
+           function groupTip (d) {
             var p = d3.format(".1%"), q = d3.format(",f")
             return "Group Info:<br/>"
                 + d.gname + " : " + q(d.gvalue) + "<br/>"
                 + p(d.gvalue/(d.mtotal/2)) + " of Matrix Total (" + q(d.mtotal/2) + ")"
           }
+          
 
           function mouseover(d, i) {
             d3.select("#tooltip")
