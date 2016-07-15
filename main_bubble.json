@@ -5,6 +5,7 @@
     {"name": "Circos","address":"https://chunggilee.github.io/Circos/circos.html"},
     {"name": "CircosFunction","address":"https://chunggilee.github.io/CircosFunction/index.html", "note":""},
     {"name": "Chord","address":"https://chunggilee.github.io/Chord/chord.html", "note":""}
+    {"name": "EdgeBundle","address":"https://chunggilee.github.io/EdgeBundle/index.html", "note":""}
 ]},
 {"name": "Clustering", "description": "",
 "children":[
