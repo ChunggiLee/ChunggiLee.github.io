@@ -58,7 +58,7 @@ d3.csv("flare.csv", function(error, data) {
 	if (error) throw error;
 	
 	var root = stratify(data).sort(function(a, b) { return (a.height - b.height) || a.id.localeCompare(b.id); });
-	
+	console.log(root);
 	tree(root);
 	
 	var link = g.selectAll(".link").data(root.descendants().slice(1))
