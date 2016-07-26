@@ -1,7 +1,7 @@
 <html>
   <head>
   <script type="text/javascript" src="d3.v2.js"></script>
-  <script type="text/javascript" src="data.js"></script>
+  <script type="text/javascript" src="../Heatmap/clusterData.js"></script>
 
   <style>
     body {
@@ -36,13 +36,23 @@
   </style>
   </head>
   <body>
-  <div id="colorDiv" style="text-align:right;">
+  <div id="colorDiv" style="text-align:right; margin: 8px 10px 0px 0px;";>
+  	ClusterType: 
+  	<select id="clustertpye">
+  		<option value="single">single</option>
+  		<option value="complete">complete</option>
+  		<option value="average">average</option>
+  		<option value="weighted">weighted</option>
+  		<option value="centroid">centroid</option>
+  		<option value="median">median</option>
+  		<option value="ward">ward</option>
+  	</select>
   	Colors: 
   	<select id="color">
-  	<option value="BWR">Blue, White, Red</option>
-  	<option value="GBR">Green, Black, Red</option>
-  	<option value="BWR5">Blue, White, Red 5</option>
-  	<option value="ROY">Red, Orange, Yellow</option>
+  		<option value="BWR">Blue, White, Red</option>
+  		<option value="GBR">Green, Black, Red</option>
+  		<option value="BWR5">Blue, White, Red 5</option>
+  		<option value="ROY">Red, Orange, Yellow</option>
   	</select>
   </div>
 
@@ -55,26 +65,28 @@
 
     //attach a SVG node to the document
     //height and width defined by the row/column lengths
-    var width = (w * cols.length) + 400;
+    var width = (w * singlecols.length) + 400;
     
-    var color = d3.select("body").select("#colorDiv").attr("transform", "translate(" + (width - 200) + ", 50 " + ")" );
     
-    var mySVG = d3.select("body")
+    var mySVG = d3.select("body").append("div").attr("style", "text-align:right;")
       .append("svg")
-      .attr("width", (w * cols.length) + 400) 
-      .attr("height", (h * rows.length + 100))
-      .style('position','absolute')
-      .style('top',0)
-      .style('left',15);
+      .attr("width", (w * singlecols.length) + 400) 
+      .attr("height", (h * singlerows.length + 100))
+      //.style('position','absolute')
+      //.style('top',0)
+      //.style('left',15);
       
     var colorScale = d3.scale.linear()
         		.domain([minData, 0, maxData])
         		.range(["blue", "white", "red"]);
     var heatmapRow;
     var heatmapRects;
-    
+    var currentColor, currentData, currentCols, currentRows;
+    currentData = singledata, currentCols = singlecols, currentRows = singlerows;
+    currentColor = colorScale;
+    CreateHeatmap(singledata, singlecols, singlerows);
     legend(colorScale);
-    CreateHeatmap()
+    
     
     
 
@@ -125,69 +137,67 @@
 		//console.log(tree(root));
 	});*/
 
-    //label columns (Condition name)
-    var columnLabel = mySVG.selectAll(".colLabel")
-      .data(cols)
-      .enter().append('svg:text')
-      .attr('x', function(d,i) {
-        return ((i + 0.5) * w) + 75;
-      })
-      .attr('y', 30)
-      .attr('class','label')
-      .style('text-anchor','middle')
-      .text(function(d) {return d;});
       
-    //label row (Gene name)
-    var rowLabel = mySVG.selectAll(".rowLabel")
-      .data(rows)
-      .enter().append('svg:text')
-      .attr('x', 30)
-      .attr('y', function(d,i) {
-        return ((i + 3.5) * h) + 25;
-      })
-      .attr('class','label')
-      .style('text-anchor','middle')
-      .text(function(d) {return d;});
-      
-      
+    d3.select("#clustertpye").on("change",function(){
+    	clustertype(this.value, currentColor);
+  	});
+  
+  	function clustertype(value, color){
+   		if(value=="single"){
+   			mySVG.selectAll("g").remove();
+   			mySVG.selectAll("text").remove();
+   			CreateHeatmap(singledata, singlecols, singlerows);
+   			currentData = singledata, currentCols = singlecols, currentRows = singlerows;
+   			legend(color);
+    		
+   		}else if (value=="complete"){
+   			mySVG.selectAll("g").remove();
+   			mySVG.selectAll("text").remove();
+   			CreateHeatmap(completedata, completecols, completerows);
+   			currentData = completedata, currentCols = completecols, currentRows = completerows;
+   			legend(color);
+   			
+   			
 
-    //expression value label
-    var expLab = d3.select("body")
-      .append('div')
-      .style('height',23)
-      .style('position','absolute')
-      .style('background','FFE53B')
-      .style('opacity',0.8)
-      .style('top',0)
-      .style('padding',10)
-      .style('left',40)
-      .style('display','none');
-
-    //heatmap mouse events
-    heatmapRow
-      .on('mouseover', function(d,i) {
-        d3.select(this)
-          .attr('stroke-width',1)
-          .attr('stroke','black')
-
-          output = '<b>' + rows[i] + '</b><br>';
-          for (var j = 0 , count = data[i].length; j < count; j ++ ) {
-            output += data[i][j][0] + ", ";
-          }
-
-          expLab
-            .style('top',(i * h))
-            .style('display','block')
-            .html(output.substring(0,output.length - 3));
-      })
-      .on('mouseout', function(d,i) {
-        d3.select(this)
-          .attr('stroke-width',0)
-          .attr('stroke','none')
-
-        expLab
-          .style('display','none')
-      });
+   		}else if (value=="average"){
+   			mySVG.selectAll("g").remove();
+   			mySVG.selectAll("text").remove();
+   			CreateHeatmap(averagedata, averagecols, averagerows);
+   			currentData = averagedata, currentCols = averagecols, currentRows = averagerows;
+   			legend(color);
+   			
+    		
+   		}else if (value=="weighted"){
+			mySVG.selectAll("g").remove();
+   			mySVG.selectAll("text").remove();
+   			CreateHeatmap(weighteddata, weightedcols, weightedrows);
+   			currentData = weighteddata, currentCols = weightedcols, currentRows = weightedrows;
+   			legend(color);
+   			
+   		}else if (value=="centroid"){
+   			mySVG.selectAll("g").remove();
+   			mySVG.selectAll("text").remove();
+   			CreateHeatmap(centroiddata, centroidcols, centroidrows);
+   			currentData = centroiddata, currentCols = centroidcols, currentRows = centroidrows;
+   			legend(color);
+   			
+   		}else if (value=="median"){
+   			mySVG.selectAll("g").remove();
+   			mySVG.selectAll("text").remove();
+   			CreateHeatmap(mediandata, mediancols, medianrows);
+   			currentData = mediandata, currentCols = mediancols, currentRows = medianrows;
+   			legend(color);
+   			
+   		}else if (value=="ward"){
+   			mySVG.selectAll("g").remove();
+   			mySVG.selectAll("text").remove();
+   			CreateHeatmap(warddata, wardcols, wardrows);
+   			currentData = warddata, currentCols = wardcols, currentRows = wardrows;
+   			legend(color);
+			
+   		}
+   		
+  	}
       
 	d3.select("#color").on("change",function(){
     	color(this.value);
@@ -199,16 +209,18 @@
     		colorScale = d3.scale.linear()
         		.domain([minData, 0, maxData])
         		.range(["blue", "white", "red"]);
+        		currentColor = colorScale;
         		legend(colorScale);
-        		CreateHeatmap();
+        		CreateHeatmap(currentData, currentCols, currentRows);
    		}else if (value=="GBR"){
    			mySVG.selectAll("g").remove();
    			var rbgColors = ["#00ff00", "#000000", "#ff0000"];
      		colorScale = d3.scale.linear()
         		.domain([minData, 0, maxData])
         		.range(rbgColors);
+        		currentColor = colorScale;
         		legend(colorScale);
-        		CreateHeatmap();
+        		CreateHeatmap(currentData, currentCols, currentRows);
 
    		}else if (value=="BWR5"){
    			mySVG.selectAll("g").remove();
@@ -216,16 +228,18 @@
     		colorScale = d3.scale.linear()
       		.domain([minData, -1, 0, 1, maxData])
       		.range(colors);
+      		currentColor = colorScale;
       		legend(colorScale);
-      		CreateHeatmap();
+      		CreateHeatmap(currentData, currentCols, currentRows);
    		}else if (value=="ROY"){
 			mySVG.selectAll("g").remove();
    			var colors = ["#ffff00", "#ffa500", "#ff0000"];
     		colorScale = d3.scale.linear()
       		.domain([minData, 0, maxData])
       		.range(colors);
+      		currentColor = colorScale;
       		legend(colorScale);
-      		CreateHeatmap();
+      		CreateHeatmap(currentData, currentCols, currentRows);
    		}
   	}
   	
@@ -251,7 +265,9 @@
     		.text(function(d) { return d; });
 	} 
 	
-	function CreateHeatmap(){
+	function CreateHeatmap(data, cols, rows){
+	
+		//console.log(cols);
     	//generate the heatmap
     	heatmapRow = mySVG.selectAll(".heatmap")
       		.data(data)
@@ -274,7 +290,73 @@
         	.style('fill',function(d) {
           		return colorScale(d[0]);
         	});
-    	}
-   </script>
+    	
+    	
+    	//console.log(cols);
+    	//label columns (Condition name)
+    	var columnLabel = mySVG.selectAll(".colLabel")
+     	.data(cols)
+      	.enter().append('svg:text')
+      	.attr('x', function(d,i) {
+        	return ((i + 0.5) * w) + 75;
+      	})
+      	.attr('y', 30)
+      	.attr('class','label')
+      	.style('text-anchor','middle')
+      	.text(function(d) {return d;});
+      
+    	//label row (Gene name)
+    	var rowLabel = mySVG.selectAll(".rowLabel")
+      	.data(rows)
+      	.enter().append('svg:text')
+      	.attr('x', 30)
+      	.attr('y', function(d,i) {
+        	return ((i + 3.5) * h) + 25;
+      	})
+      	.attr('class','label')
+      	.style('text-anchor','middle')
+      	.text(function(d) {return d;});
+      
+      
+
+    	//expression value label
+    	var expLab = d3.select("body")
+    	.append('div')
+      	.style('height',23)
+      	.style('position','absolute')
+      	.style('background','FFE53B')
+      	.style('opacity',0.8)
+      	.style('top',0)
+      	.style('padding',10)
+      	.style('left',40)
+      	.style('display','none');
+
+    	//heatmap mouse events
+    	heatmapRow
+      	.on('mouseover', function(d,i) {
+        	d3.select(this)
+          	.attr('stroke-width',1)
+          	.attr('stroke','black')
+
+          	output = '<b>' + rows[i] + '</b><br>';
+          	for (var j = 0 , count = data[i].length; j < count; j ++ ) {
+            	output += data[i][j][0] + ", ";
+          	}
+
+          	expLab
+            	.style('top',(i * h))
+            	.style('display','block')
+            	.html(output.substring(0,output.length - 3));
+      	})
+      	.on('mouseout', function(d,i) {
+        	d3.select(this)
+          	.attr('stroke-width',0)
+          	.attr('stroke','none')
+
+        	expLab
+          	.style('display','none')
+      	});
+      }
+	</script>
   </body>
 </html>
