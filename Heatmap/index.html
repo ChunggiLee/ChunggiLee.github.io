@@ -2,6 +2,7 @@
   <head>
   <script type="text/javascript" src="d3.v2.js"></script>
   <script type="text/javascript" src="data.js"></script>
+
   <style>
     body {
       margin: 0px;
@@ -11,6 +12,17 @@
   </style>
   </head>
   <body>
+  <div style="text-align:right; margin: 15px 150px 0px 0px;">
+  	Colors: 
+  	<select id="color">
+  	<option value="BWR">Blue, White, Red</option>
+  	<option value="GBR">Green, Black, Red</option>
+  	<option value="BWR5">Blue, White, Red 5</option>
+  	<option value="ROY">Red, Orange, Yellow</option>
+  	</select>
+  </div>
+
+  
     <script type="text/javascript">
     //height of each row in the heatmap
     var h = 10;
@@ -29,65 +41,20 @@
       .style('top',0)
       .style('left',15);
       
-    var colors = ["#0000ff", "#0088ff", "#ffffff", "#ff0088" ,"#ff0000"];
-    
-    
     var colorScale = d3.scale.linear()
-        .domain([minData, 0, maxData])
-        .range(["blue", "white", "red"]);
-
-    //define a color scale using the min and max expression values
-    /*var colorScale = d3.scale.linear()
-      .domain([minData, -1, 0, 1, maxData])
-      .range(colors);*/
-      
-     /* var color = d3.scale.category10()
-    .domain(["Bacteria", "Eukaryota", "Archaea"]);*/
-      
-    console.log("minData : " + minData + " maxData : " + maxData);
+        		.domain([minData, 0, maxData])
+        		.range(["blue", "white", "red"]);
+    var heatmapRow;
+    var heatmapRects;
     
-    var legend = mySVG.append("g")
-    	.attr("class", "legend")
-  		.selectAll("g")
-    	.data(colorScale.domain())
-  		.enter().append("g")
-    	.attr("transform", function(d, i) { return "translate(" + (width - 10) + "," + (i * 20 + 10) + ")"; });
+    legend(colorScale);
+    CreateHeatmap()
+    
+    
 
-	legend.append("rect")
-    	.attr("x", -18)
-    	.attr("width", 18)
-    	.attr("height", 18)
-    	.style("fill", colorScale);
-
-	legend.append("text")
-    	.attr("x", -24)
-    	.attr("y", 9)
-    	.attr("dy", ".35em")
-    	.style("text-anchor", "end")
-    	.text(function(d) { return d; });
-
-    //generate the heatmap
-    var heatmapRow = mySVG.selectAll(".heatmap")
-      .data(data)
-      .enter().append("g");
-
-	// Draw the heatmap
-    var heatmapRects = heatmapRow
-        .selectAll(".rect")
-        .data(function(d) {
-          return d;
-        }).enter().append("svg:rect")
-        .attr('width',w)
-        .attr('height',h)
-        .attr('x', function(d) {
-          return (d[2] * w) + 75;
-        })
-        .attr('y', function(d) {
-          return (d[1] * h) + 50;
-        })
-        .style('fill',function(d) {
-          return colorScale(d[0]);
-        });
+	//console.log(data);
+	
+	
 
     //label columns (Condition name)
     var columnLabel = mySVG.selectAll(".colLabel")
@@ -152,6 +119,93 @@
         expLab
           .style('display','none')
       });
+      
+	d3.select("#color").on("change",function(){
+    	color(this.value);
+  	});
+  
+  	function color(value){
+   		if(value=="BWR"){
+   			mySVG.selectAll("g").remove();
+    		colorScale = d3.scale.linear()
+        		.domain([minData, 0, maxData])
+        		.range(["blue", "white", "red"]);
+        		legend(colorScale);
+        		CreateHeatmap();
+   		}else if (value=="GBR"){
+   			mySVG.selectAll("g").remove();
+   			var rbgColors = ["#00ff00", "#000000", "#ff0000"];
+     		colorScale = d3.scale.linear()
+        		.domain([minData, 0, maxData])
+        		.range(rbgColors);
+        		legend(colorScale);
+        		CreateHeatmap();
+
+   		}else if (value=="BWR5"){
+   			mySVG.selectAll("g").remove();
+   			var colors = ["#0000ff", "#0088ff", "#ffffff", "#ff0088" ,"#ff0000"];
+    		colorScale = d3.scale.linear()
+      		.domain([minData, -1, 0, 1, maxData])
+      		.range(colors);
+      		legend(colorScale);
+      		CreateHeatmap();
+   		}else if (value=="ROY"){
+			mySVG.selectAll("g").remove();
+   			var colors = ["#ffff00", "#ffa500", "#ff0000"];
+    		colorScale = d3.scale.linear()
+      		.domain([minData, 0, maxData])
+      		.range(colors);
+      		legend(colorScale);
+      		CreateHeatmap();
+   		}
+  	}
+  	
+  	function legend(colorScale) {
+    	var legend = mySVG.append("g")
+    		.attr("class", "legend")
+  			.selectAll("g")
+    		.data(colorScale.domain())
+  			.enter().append("g")
+    		.attr("transform", function(d, i) { return "translate(" + (width - 10) + "," + (i * 20 + 50) + ")"; });
+
+		legend.append("rect")
+    		.attr("x", -18)
+    		.attr("width", 18)
+    		.attr("height", 18)
+    		.style("fill", colorScale);
+
+		legend.append("text")
+    		.attr("x", -24)
+    		.attr("y", 9)
+    		.attr("dy", ".35em")
+    		.style("text-anchor", "end")
+    		.text(function(d) { return d; });
+	} 
+	
+	function CreateHeatmap(){
+    	//generate the heatmap
+    	heatmapRow = mySVG.selectAll(".heatmap")
+      		.data(data)
+      		.enter().append("g");
+      
+		// Draw the heatmap
+    	heatmapRects = heatmapRow
+        	.selectAll(".rect")
+        	.data(function(d) {
+          	return d;
+        	}).enter().append("svg:rect")
+        	.attr('width',w)
+        	.attr('height',h)
+        	.attr('x', function(d) {
+          		return (d[2] * w) + 75;
+        	})
+        		.attr('y', function(d) {
+          		return (d[1] * h) + 50;
+        	})
+        	.style('fill',function(d) {
+          		return colorScale(d[0]);
+        	});
+    	}
    </script>
   </body>
 </html>
