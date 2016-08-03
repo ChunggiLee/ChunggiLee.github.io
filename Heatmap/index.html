@@ -204,7 +204,7 @@
    		}else if (value=="GBR"){
    			mySVG.selectAll("g").remove();
    			var rbgColors = ["#00ff00", "#000000", "#ff0000"];
-     		colorScale = d3.scale.linear()
+     		colorScale = d3.scaleLinear()
         		.domain([minData, 0, maxData])
         		.range(rbgColors);
         		currentColor = colorScale;
@@ -214,7 +214,7 @@
    		}else if (value=="BWR5"){
    			mySVG.selectAll("g").remove();
    			var colors = ["#0000ff", "#0088ff", "#ffffff", "#ff0088" ,"#ff0000"];
-    		colorScale = d3.scale.linear()
+    		colorScale = d3.scaleLinear()
       		.domain([minData, -1, 0, 1, maxData])
       		.range(colors);
       		currentColor = colorScale;
@@ -223,7 +223,7 @@
    		}else if (value=="ROY"){
 			mySVG.selectAll("g").remove();
    			var colors = ["#ffff00", "#ffa500", "#ff0000"];
-    		colorScale = d3.scale.linear()
+    		colorScale = d3.scaleLinear()
       		.domain([minData, 0, maxData])
       		.range(colors);
       		currentColor = colorScale;
@@ -355,14 +355,14 @@
 	//This code help to find the parent id in this hierarchy, so change this part.
 	var stratify = d3.stratify().parentId(function(d) { return d.id.substring(0, d.id.lastIndexOf(".")); });
 
-	console.log(clusterName+"tree.csv");
+	//console.log(clusterName+"tree.csv");
 	d3.csv(clusterName+"tree.csv", function(error, data) {
 		if (error) throw error;
 	
 		var root = stratify(data);
 		//var root = stratify(data).sort(function(a, b) { return (a.height - b.height) || a.id.localeCompare(b.id); });
 
-		console.log(root);
+		//console.log(root);
 		
 		tree(root);
 	
