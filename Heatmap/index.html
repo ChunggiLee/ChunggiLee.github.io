@@ -1,6 +1,7 @@
 <html>
   <head>
-  <script type="text/javascript" src="d3.v2.js"></script>
+  
+  <script type="text/javascript" src="//d3js.org/d3.v4.min.js"></script>
   <script type="text/javascript" src="../Heatmap/clusterData.js"></script>
 
   <style>
@@ -31,6 +32,13 @@
   		stroke: #555;
   		stroke-opacity: 0.4;
   		stroke-width: 1.5px;
+	}
+	
+	.container {
+		display : table;
+		overflow : hidden;
+		display : table-cell;
+		vertical-align : middle;
 	}
 	
   </style>
@@ -67,16 +75,26 @@
     //height and width defined by the row/column lengths
     var width = (w * singlecols.length) + 400;
     
+    d3.select("body").append("div").attr("id","heatmap");
     
-    var mySVG = d3.select("body").append("div").attr("style", "text-align:right;")
-      .append("svg")
+    var treeWidth = 400, treeHeight = 2990;
+	var svg = d3.select("body").select("#heatmap").append("div").attr("class", "container").append("div").attr("style","float:left").append("svg:svg")
+            	.attr("width", treeWidth)
+            	.attr("height", treeHeight)
+            	.append("svg:g")
+            	.attr("id", "tree")
+            	.attr("transform", "translate(40, 0)");
+    
+    var mySVG = d3.select("body").select("#heatmap").append("div").attr("class", "container")//.attr("id", "heatmap")//.attr("style", "text-align:right;")
+    //.attr("width", "1400").attr("height", "3090")
+      .append("div").attr("style","float:right").append("svg")
       .attr("width", (w * singlecols.length) + 400) 
       .attr("height", (h * singlerows.length + 100))
       //.style('position','absolute')
       //.style('top',0)
       //.style('left',15);
       
-    var colorScale = d3.scale.linear()
+    var colorScale = d3.scaleLinear()
         		.domain([minData, 0, maxData])
         		.range(["blue", "white", "red"]);
     var heatmapRow;
@@ -88,55 +106,11 @@
     legend(colorScale);
     
     
-    
+    makeTree("single");
 
 	//console.log(data);
 	
-	/*var width = 960, height = 2000;
-	var svg = d3.select("body").append("svg:svg")
-            	.attr("width", width)
-            	.attr("height", height).append("svg:g")
-            	.attr("id", "tree")
-            	.attr("transform", "translate(40, 0)").call(d3.behavior.zoom().on("zoom", function () {
-    				svg.attr("transform", "translate( 40,0 )" + " scale(" + d3.event.scale + ")")
-  				}));
-
-	var g = d3.select("#tree")
-    
-	var tree = d3.cluster().size([height, 160]);
-	//This code help to find the parent id in this hierarchy, so change this part.
-	var stratify = d3.stratify().parentId(function(d) { return d.id.substring(0, d.id.lastIndexOf(".")); });
-
-	d3.csv("tree.csv", function(error, data) {
-		if (error) throw error;
 	
-		var root = stratify(data).sort(function(a, b) { return (a.height - b.height) || a.id.localeCompare(b.id); });
-	
-		tree(root);
-	
-		var link = g.selectAll(".link").data(root.descendants().slice(1))
-					.enter().append("path").attr("class", "link").attr("d", function(d) {
-						return "M" + d.y + "," + d.x	
-						+ " L " + d.parent.y + " " + d.x + " L " + d.parent.y + " " + d.parent.x  ;	
-				
-            			});
-            			//+ "V" + (d.parent.y) + "H" + d.parent.x; 
-    	//console.log(link);
-    
-    	var node = g.selectAll(".node")
-    				.data(root.descendants())
-    				.enter().append("g")
-    				.attr("class", function(d) { return "node" + (d.children ? " node--internal" : " node--leaf"); })
-      				.attr("transform", function(d) { return "translate(" + d.y + "," + d.x + ")"; })
-      			
-    	node.append("circle").attr("r", 2.5);
-    	node.append("text").attr("dy", 3).attr("x", function(d) { return d.children ? -8 : 8; })
-      	.style("text-anchor", function(d) { return d.children ? "end" : "start"; })
-      	.text(function(d) { return d.id.substring(d.id.lastIndexOf(".") + 1); });
-	
-		//console.log(tree(root));
-	});*/
-
       
     d3.select("#clustertpye").on("change",function(){
     	clustertype(this.value, currentColor);
@@ -146,55 +120,70 @@
    		if(value=="single"){
    			mySVG.selectAll("g").remove();
    			mySVG.selectAll("text").remove();
+   			svg.selectAll("path").remove();
+   			svg.selectAll("g").remove();
    			CreateHeatmap(singledata, singlecols, singlerows);
    			currentData = singledata, currentCols = singlecols, currentRows = singlerows;
    			legend(color);
+   			makeTree(value);
     		
    		}else if (value=="complete"){
    			mySVG.selectAll("g").remove();
    			mySVG.selectAll("text").remove();
+   			svg.selectAll("path").remove();
+   			svg.selectAll("g").remove();
    			CreateHeatmap(completedata, completecols, completerows);
    			currentData = completedata, currentCols = completecols, currentRows = completerows;
    			legend(color);
-   			
+   			makeTree(value);
    			
 
    		}else if (value=="average"){
    			mySVG.selectAll("g").remove();
    			mySVG.selectAll("text").remove();
+   			svg.selectAll("path").remove();
+   			svg.selectAll("g").remove();
    			CreateHeatmap(averagedata, averagecols, averagerows);
    			currentData = averagedata, currentCols = averagecols, currentRows = averagerows;
    			legend(color);
-   			
+   			makeTree(value);
     		
    		}else if (value=="weighted"){
 			mySVG.selectAll("g").remove();
    			mySVG.selectAll("text").remove();
+   			svg.selectAll("path").remove();
+   			svg.selectAll("g").remove();
    			CreateHeatmap(weighteddata, weightedcols, weightedrows);
    			currentData = weighteddata, currentCols = weightedcols, currentRows = weightedrows;
    			legend(color);
-   			
+   			makeTree(value);
    		}else if (value=="centroid"){
    			mySVG.selectAll("g").remove();
    			mySVG.selectAll("text").remove();
+   			svg.selectAll("path").remove();
+   			svg.selectAll("g").remove();
    			CreateHeatmap(centroiddata, centroidcols, centroidrows);
    			currentData = centroiddata, currentCols = centroidcols, currentRows = centroidrows;
    			legend(color);
-   			
+   			makeTree(value);
    		}else if (value=="median"){
    			mySVG.selectAll("g").remove();
    			mySVG.selectAll("text").remove();
+   			svg.selectAll("path").remove();
+   			svg.selectAll("g").remove();
    			CreateHeatmap(mediandata, mediancols, medianrows);
    			currentData = mediandata, currentCols = mediancols, currentRows = medianrows;
    			legend(color);
-   			
+   			makeTree(value);
    		}else if (value=="ward"){
    			mySVG.selectAll("g").remove();
    			mySVG.selectAll("text").remove();
+   			svg.selectAll("path").remove();
+   			svg.selectAll("g").remove();
    			CreateHeatmap(warddata, wardcols, wardrows);
    			currentData = warddata, currentCols = wardcols, currentRows = wardrows;
    			legend(color);
-			
+			makeTree(value);
    		}
    		
   	}
@@ -357,6 +346,49 @@
           	.style('display','none')
       	});
       }
+      
+      function makeTree(clusterName){
+
+	var g = d3.select("#tree")
+    
+	var tree = d3.cluster().size([treeHeight, 300]);
+	//This code help to find the parent id in this hierarchy, so change this part.
+	var stratify = d3.stratify().parentId(function(d) { return d.id.substring(0, d.id.lastIndexOf(".")); });
+
+	console.log(clusterName+"tree.csv");
+	d3.csv(clusterName+"tree.csv", function(error, data) {
+		if (error) throw error;
+	
+		var root = stratify(data);
+		//var root = stratify(data).sort(function(a, b) { return (a.height - b.height) || a.id.localeCompare(b.id); });
+
+		console.log(root);
+		
+		tree(root);
+	
+		var link = g.selectAll(".link").data(root.descendants().slice(1))
+					.enter().append("path").attr("class", "link").attr("d", function(d) {
+						return "M" + d.y + "," + d.x	
+						+ " L " + d.parent.y + " " + d.x + " L " + d.parent.y + " " + d.parent.x  ;	
+				
+            			});
+            			//+ "V" + (d.parent.y) + "H" + d.parent.x; 
+    	//console.log(link);
+    
+    	var node = g.selectAll(".node")
+    				.data(root.descendants())
+    				.enter().append("g")
+    				.attr("class", function(d) { return "node" + (d.children ? " node--internal" : " node--leaf"); })
+      				.attr("transform", function(d) { return "translate(" + d.y + "," + d.x + ")"; })
+      			
+    	node.append("circle").attr("r", 2.5);
+    	node.append("text").attr("dy", 3).attr("x", function(d) { return d.children ? -8 : 8; })
+      	.style("text-anchor", function(d) { return d.children ? "end" : "start"; })
+      	.text(function(d) { return d.id.substring(d.id.lastIndexOf(".") + 1); });
+	
+		//console.log(tree(root));
+	});
+}
 	</script>
   </body>
 </html>
