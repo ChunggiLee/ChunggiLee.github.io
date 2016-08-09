@@ -1,0 +1,147 @@
+<script type="text/javascript" src="http://code.jquery.com/jquery-1.11.2.min.js"></script>
+<script type="text/javascript" src="../Heatmap/makeTree.js"></script>
+<script type="text/javascript" src="../Heatmap/colJsonData.js"></script>
+<script type="text/javascript" src="../Heatmap/rowJsonData.js"></script>
+
+
+<script>
+
+var data = [
+    {
+        "label": "root",
+        "itemId": "root",
+        "parentId": "999"
+    },
+    {
+        "label": "User",
+        "itemId": "role1",
+        "parentId": "root"
+    },
+    {
+        "label": "subUser1",
+        "itemId": "role11",
+        "parentId": "role1"
+    },
+    {
+        "label": "subUser2",
+        "itemId": "role12",
+        "parentId": "role1"
+    },
+    {
+        "label": "subUser2-1",
+        "itemId": "role121",
+        "parentId": "role12"
+    },
+    {
+        "label": "subUser2-1-1",
+        "itemId": "role1211",
+        "parentId": "role121"
+    },
+    {
+        "label": "subUser2-1-2",
+        "itemId": "role1212",
+        "parentId": "role121"
+    },
+    {
+        "label": "Admin",
+        "itemId": "role2",
+        "parentId": "root"
+    },
+    {
+        "label": "Guest",
+        "itemId": "role3",
+        "parentId": "root"
+    }
+];
+
+var jsonData1 = getTreeModel( data, '999',{
+    id: "itemId",
+    parentId: "parentId",
+    order: ["label","desc"]
+});
+
+	var jsonData = getTreeModel( singleRowJson, 'root',{
+    id: "id",
+    parentId: "parent",
+    order: ["label","desc"]
+});
+
+$(".verticalTree").zooTree(jsonData1, {
+    forceCreate: true, // 현재 사용하지 않음
+    render: function(data) { // <li>...</li> 태그안에 내용을 커스텀 할 수 있다
+        var $div = $("<a>").append(data.label);
+        return $div;
+    }
+});
+
+var newData = { name :"root", children : [] },
+    levels = ["dep","name"];
+
+// For each data row, loop through the expected levels traversing the output tree
+data.forEach(function(d){
+    // Keep this as a reference to the current level
+    var depthCursor = newData.children;
+    // Go down one level at a time
+    levels.forEach(function( property, depth ){
+
+        // Look to see if a branch has already been created
+        var index;
+        depthCursor.forEach(function(child,i){
+            if ( d[property] == child.name ) index = i;
+        });
+        // Add a branch if it isn't there
+        if ( isNaN(index) ) {
+            depthCursor.push({ name : d[property], children : []});
+            index = depthCursor.length - 1;
+        }
+        // Now reference the new child array as we go deeper into the tree
+        depthCursor = depthCursor[index].children;
+        // This is a leaf, so add the last element to the specified branch
+        if ( depth === levels.length - 1 ) depthCursor.push({ name : d.name });
+    });
+});
+
+function writeFile(name, msg){
+
+	if(name == "") return false;
+
+	var defaultpath = "/Users/ichung-gi/Documents/ChunggiLee.github.io/Heatmap"; // 기록하고자 하는 경로. ex) C:\\Program Files\\logs
+
+	var fileObject = new ActiveXObject("Scripting.FileSystemObject");
+
+	var fullpath = defaultpath+"/"+name;
+
+ // 파일이 생성되어있지 않으면 새로 만들고 기록
+
+	if(!fileObject.FileExists(fullpath)){
+
+		var fWrite = fileObject.CreateTextFile(fullpath,false);
+
+		fWrite.write(msg);
+
+		fWrite.close();
+
+	}else{
+
+// 파일이 이미 생성되어 있으면 appending 모드로 파일 열고 기록
+
+		/*var fWrite = fileObject.OpenTextFile(fullpath, 8);
+
+		fWrite.write(msg);
+
+		fWrite.close();*/
+	}
+}
+
+writeFile("rowHierJson.json", JSON.stringify(jsonData))
+
+//console.log(newData);
+document.write(JSON.stringify(jsonData)); 
+</script>
+
+<html>
+<div class="verticalTree"></div>
+</html>
+
+
+

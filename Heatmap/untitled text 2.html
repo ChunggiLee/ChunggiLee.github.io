@@ -1,11 +1,7 @@
 <html>
   <head>
-  	<script type="text/javascript" src="//d3js.org/d3.v4.min.js"></script>
-  	<script type="text/javascript" src="../Heatmap/genomixdata.js"></script>
-  	<script type="text/javascript" src="http://code.jquery.com/jquery-1.11.2.min.js"></script>
-	<script type="text/javascript" src="../Heatmap/makeTree.js"></script>
-	<script type="text/javascript" src="../Heatmap/colJsonData.js"></script>
-	<script type="text/javascript" src="../Heatmap/rowJsonData.js"></script>
+  <script type="text/javascript" src="//d3js.org/d3.v4.min.js"></script>
+  <script type="text/javascript" src="../Heatmap/genomixData.js"></script>
   
 
   <style>
@@ -61,8 +57,8 @@
   	</select>
   	Colors: 
   	<select id="color">
-  		<option value="GBR">Green, Black, Red</option>
   		<option value="BWR">Blue, White, Red</option>
+  		<option value="GBR">Green, Black, Red</option>
   		<option value="BWR5">Blue, White, Red 5</option>
   		<option value="ROY">Red, Orange, Yellow</option>
   	</select>
@@ -74,7 +70,7 @@
   </select>
   </div>
 
-  <link rel="stylesheet" type="text/css" href="css/makeTree.css">
+  
     <script type="text/javascript">
     //height of each row in the heatmap
     var h = 10;
@@ -86,13 +82,13 @@
     var width = (w * singlecols.length) + 400;
     
     
-    var colTreeWidth = width, colTreeHeight = 80;
+    var colTreeWidth = width, colTreeHeight = 400;
 	var svg = d3.select("body").append("div").attr("style", "margin: 0px 0px 0px 0px").append("svg:svg")
             	.attr("width", colTreeWidth)
             	.attr("height", colTreeHeight)
             	.append("svg:g")
             	.attr("id", "colTree")
-            	.attr("transform", "translate(460,0)");
+            	.attr("transform", "translate(40,0)");
     
     d3.select("body").append("div").attr("id","heatmap");
     
@@ -181,7 +177,6 @@
    			currentData = singledata, currentCols = singlecols, currentRows = singlerows;
    			legend(color);
    			makeTree(value);
-   			makeColTree(value);
     		
    		}else if (value=="complete"){
    			mySVG.selectAll("g").remove();
@@ -192,7 +187,6 @@
    			currentData = completedata, currentCols = completecols, currentRows = completerows;
    			legend(color);
    			makeTree(value);
-   			makeColTree(value);
    			
 
    		}else if (value=="average"){
@@ -204,7 +198,6 @@
    			currentData = averagedata, currentCols = averagecols, currentRows = averagerows;
    			legend(color);
    			makeTree(value);
-   			makeColTree(value);
     		
    		}else if (value=="weighted"){
 			mySVG.selectAll("g").remove();
@@ -215,7 +208,6 @@
    			currentData = weighteddata, currentCols = weightedcols, currentRows = weightedrows;
    			legend(color);
    			makeTree(value);
-   			makeColTree(value);
    		}else if (value=="centroid"){
    			mySVG.selectAll("g").remove();
    			mySVG.selectAll("text").remove();
@@ -225,7 +217,6 @@
    			currentData = centroiddata, currentCols = centroidcols, currentRows = centroidrows;
    			legend(color);
    			makeTree(value);
-   			makeColTree(value);
    		}else if (value=="median"){
    			mySVG.selectAll("g").remove();
    			mySVG.selectAll("text").remove();
@@ -235,7 +226,6 @@
    			currentData = mediandata, currentCols = mediancols, currentRows = medianrows;
    			legend(color);
    			makeTree(value);
-   			makeColTree(value);
    		}else if (value=="ward"){
    			mySVG.selectAll("g").remove();
    			mySVG.selectAll("text").remove();
@@ -245,7 +235,6 @@
    			currentData = warddata, currentCols = wardcols, currentRows = wardrows;
    			legend(color);
 			makeTree(value);
-			makeColTree(value);
    		}
    		
   	}
@@ -421,14 +410,10 @@ function makeTree(clusterName){
 	d3.csv(clusterName+"tree.csv", function(error, data) {
 		if (error) throw error;
 	
-		var jsonData = getTreeModel( singleRowJson, 'root',{
-    		id: "id",
-    		parentId: "parent",
-    		order: ["label","desc"]
-		});
 		var root = stratify(data);
 		//var root = stratify(data).sort(function(a, b) { return (a.height - b.height) || a.id.localeCompare(b.id); });
-		
+
+		//console.log(root);
 		
 		tree(root);
 	
@@ -460,7 +445,7 @@ function makeColTree(clusterName){
 
 	var g = d3.select("#colTree")
     
-	var tree = d3.cluster().size([400, treeWidth-320]);
+	var tree = d3.cluster().size([400, treeWidth]);
 	//This code help to find the parent id in this hierarchy, so change this part.
 	var stratify = d3.stratify().parentId(function(d) { return d.id.substring(0, d.id.lastIndexOf(".")); });
 
@@ -469,33 +454,31 @@ function makeColTree(clusterName){
 		if (error) throw error;
 	
 		var root = stratify(data);
-		//var sdata = stratify(data);
-		//var root = d3.hierarchy(sdata);
 		//var root = stratify(data).sort(function(a, b) { return (a.height - b.height) || a.id.localeCompare(b.id); });
-		//console.log(root);
+
+		console.log(root);
 		
 		tree(root);
-		
 	
 		var link = g.selectAll(".link").data(root.descendants().slice(1))
 					.enter().append("path").attr("class", "link").attr("d", function(d) {
-						return "M" + d.x + "," + d.y	
-						+ " L " + d.x + " " + d.parent.y + " L " + d.parent.x + " " + d.parent.y  ;	
+						return "M" + d.y + "," + d.x	
+						+ " L " + d.parent.y + " " + d.x + " L " + d.parent.y + " " + d.parent.x  ;	
 				
             			});
             			//+ "V" + (d.parent.y) + "H" + d.parent.x; 
     	//console.log(link);
     
-    	/*var node = g.selectAll(".node")
+    	var node = g.selectAll(".node")
     				.data(root.descendants())
     				.enter().append("g")
     				.attr("class", function(d) { return "node" + (d.children ? " node--internal" : " node--leaf"); })
-      				.attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; })
+      				.attr("transform", function(d) { return "translate(" + d.y + "," + d.x + ")"; })
       			
     	node.append("circle").attr("r", 2.5);
     	node.append("text").attr("dy", 3).attr("x", function(d) { return d.children ? -8 : 8; })
       	.style("text-anchor", function(d) { return d.children ? "end" : "start"; })
-      	.text(function(d) { return d.id.substring(d.id.lastIndexOf(".") + 1); });*/
+      	.text(function(d) { return d.id.substring(d.id.lastIndexOf(".") + 1); });
 	
 		//console.log(tree(root));
 	});

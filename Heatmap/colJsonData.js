@@ -1,0 +1,1 @@
+var singleColJson = [{'label': 'root', 'id': 6, 'parent': 'root'}, {'label': 'GSM1076968', 'id': 4, 'parent': 6}, {'label': 'GSM1076965', 'id': 1, 'parent': 4}, {'label': 'GSM1076967', 'id': 3, 'parent': 4}, {'label': 'null', 'id': 5, 'parent': 6}, {'label': 'GSM1076968', 'id': 0, 'parent': 5}, {'label': 'GSM1076966', 'id': 2, 'parent': 5}];
