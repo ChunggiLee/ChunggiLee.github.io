@@ -416,11 +416,6 @@ function makeTree(clusterName){
 	d3.csv(clusterName+"tree.csv", function(error, data) {
 		if (error) throw error;
 	
-		var jsonData = getTreeModel( singleRowJson, 'root',{
-    		id: "id",
-    		parentId: "parent",
-    		order: ["label","desc"]
-		});
 		var root = stratify(data);
 		//var root = stratify(data).sort(function(a, b) { return (a.height - b.height) || a.id.localeCompare(b.id); });
 		
