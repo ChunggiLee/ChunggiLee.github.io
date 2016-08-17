@@ -147,6 +147,7 @@ var chart = svg.append("g")
 
   		function mouseovered(active) {
     		return function(d) {
+            console.log(d);
       		d3.select(this).classed("label--active", active);
       		d3.select(d.linkExtensionNode).classed("link-extension--active", active).each(moveToFront);
       		do d3.select(d.linkNode).classed("link--active", active).each(moveToFront); while (d = d.parent);
@@ -168,11 +169,6 @@ function maxLength(d) {
 // Set the radius of each node by recursively summing and scaling the distance from the root.
 function setRadius(d, y0, k) {
   d.radius = (y0 += d.length) * k;
-console.log(d);
-console.log("d.radius : " + d.radius);
-console.log("d.length : " + d.length);
-console.log("y0 : " + y0);
-console.log("k : " + k);
   if (d.children) d.children.forEach(function(d) { setRadius(d, y0, k); });
 }
 

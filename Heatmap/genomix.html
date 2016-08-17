@@ -2,6 +2,9 @@
   <head>
   	<script type="text/javascript" src="//d3js.org/d3.v4.min.js"></script>
   	<script type="text/javascript" src="../Heatmap/genomixData.js"></script>
+  	<script type="text/javascript" src="../Heatmap/url.js"></script>
+  	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+
   
 
   <style>
@@ -68,6 +71,15 @@
   		<option value="col">col</option>
   		<option value="row">row</option>
   </select>
+ 
+  </div>
+  <div style="text-align:right; margin: 20px 10px 0px 0px;";>
+   		<form id="selectGene" name="input" method="post" action="" >
+    		<input type="text" name="startNum" maxlength="10">
+    		~
+    		<input type="text" name="endNum" maxlength="10">
+    		<input type="submit" value="Query">
+		</form>
   </div>
 
     <script type="text/javascript">
@@ -126,6 +138,13 @@
     makeColTree("single");
 
 	//console.log(data);
+	
+	$( "#selectGene" ).submit(function( event ) {
+		url = "Chunggilee.github.io/Heatmap/url.py";
+		param = "param1=1111&param2=2222";
+  		goPostURL(url, param);
+  		event.preventDefault();
+	});
 	
 	d3.select("#order").on("change",function(){
     	order(this.value);
